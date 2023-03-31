@@ -70,7 +70,11 @@ public class TreeAreasGrid extends JPanel {
 		}
 	}
 
-	// Helper method to get the row based on the y coordinate of the mouse click
+	/** 
+	 * Helper method to get the row based on the y coordinate of the mouse click
+	 * @param y
+	 * @return
+	 */
 	private int getRow(int y) {
 		int row = (y - gridPanels[0][0].getLocation().y) / CELL_SIZE;
 		if (row < 0 || row >= ROWS) {
@@ -79,7 +83,11 @@ public class TreeAreasGrid extends JPanel {
 		return row;
 	}
 
-	// Helper method to get the column based on the x coordinate of the mouse click
+	/**
+	 * Helper method to get the column based on the x coordinate of the mouse click
+	 * @param x
+	 * @return
+	 */
 	private int getCol(int x) {
 		int col = (x - gridPanels[0][0].getLocation().x) / CELL_SIZE;
 		if (col < 0 || col >= COLS) {
@@ -88,9 +96,13 @@ public class TreeAreasGrid extends JPanel {
 		return col;
 	}
 
-	// Helper method to update the color of the panel at the given row and column
+	/**
+	 * Helper method to update the color of the panel at the given row and column
+	 * @param row
+	 * @param col
+	 */
 	private void updateGridPanel(int row, int col) {
-//		gridPanels[row][col].setBackground(currentColor);
+		// gridPanels[row][col].setBackground(currentColor);
 	}
 
 	public int getRows() {
