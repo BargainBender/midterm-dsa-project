@@ -98,6 +98,7 @@ public class TreeAreasGrid extends JPanel {
 
 	/**
 	 * Helper method to update the color of the panel at the given row and column
+	 * 
 	 * @param row
 	 * @param col
 	 */
