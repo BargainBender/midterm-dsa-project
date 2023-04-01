@@ -6,7 +6,12 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-
+/**
+ *  global settings is the setting you see in the right of the main application 
+ *  here you can see and change in information about, how dense the trees are. and suchj
+ * @author SOUTAISEIRIRON
+ *
+ */
 public class GlobalSettings extends JScrollPane {
 	public GlobalSettings() {
 		this.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
