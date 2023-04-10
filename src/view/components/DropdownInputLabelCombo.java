@@ -48,14 +48,6 @@ public class DropdownInputLabelCombo extends JPanel {
 	}
 
 	public void setValue(int value) {
-		switch (value) {
-		case CellDataStatus.UNSET:
-		case CellDataStatus.SET:
-		case CellDataStatus.NON_PROPERTY:
-			break;
-			default:
-				return;
-		}
 		this.input.setSelectedIndex(value);
 	}
 

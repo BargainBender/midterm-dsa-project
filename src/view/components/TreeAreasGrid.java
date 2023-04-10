@@ -10,6 +10,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
 import model.CellData.CellDataStatus;
+import view.components.GlobalSettings.MapViewMode;
 
 /**
  * Visualizing tree density for one large area,
@@ -106,7 +107,7 @@ public class TreeAreasGrid extends JPanel {
 	        }
 	        
 	        app.App.view.getControlPanel().getAreaSettingsTab().getStatusInput().setValue(clickedPanel.getStatus());
-			
+	        app.App.view.getControlPanel().getGlobalSettingsTab().getViewModeInput().setValue(MapViewMode.TOP_DOWN);
 			try {
 				app.App.view.getControlPanel().getAreaSettingsTab().getTreeCountInput().setValue(this.cell.getTreeCount());
 				app.App.view.getControlPanel().getAreaSettingsTab().getTreeCountInput().userModified = false;

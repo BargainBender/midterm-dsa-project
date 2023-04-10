@@ -3,10 +3,12 @@ package controller;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import model.CellData;
 import model.CellData.CellDataStatus;
 import model.GridData;
 import view.AppView;
 import view.components.AppMenu;
+import view.components.GlobalSettings.MapViewMode;
 import view.components.TreeAreasGridCell;
 
 public class AppController {
@@ -37,7 +39,7 @@ public class AppController {
 				return;
 			}
 			view.getTreeAreasGrid().setMaxTrees(view.getControlPanel().getGlobalSettingsTab().getMaxTreesInput().getValue());
-			
+			view.getControlPanel().getGlobalSettingsTab().getViewModeInput().setValue(MapViewMode.TOP_DOWN);
 			this.reflectData();
 			System.out.println("Max trees: " + view.getTreeAreasGrid().getMaxTrees());
 		});
@@ -54,7 +56,7 @@ public class AppController {
 			if (lastSelectedCell != null) {
 				modelData.getGrid()[lastSelectedCell.getRow()][lastSelectedCell.getCol()].setTreeCount(value);
 			}
-			
+			view.getControlPanel().getGlobalSettingsTab().getViewModeInput().setValue(MapViewMode.TOP_DOWN);
 			this.reflectData();
 		});
 		
@@ -67,7 +69,7 @@ public class AppController {
 			this.reflectData();
 		});
 		
-		// Set
+		// When a tool is selected, update cell on click
 		view.getTreeAreasGrid().addCellMouseListener(new UseStatusToolListener(new ReflectsDataCallback() {
 			
 			@Override
@@ -86,6 +88,32 @@ public class AppController {
 				view.getTreeAreasGrid().updateGrid(treeCounts, statuses, view.getTreeAreasGrid().getLastSelectedCell());
 			}
 		}));
+		
+		// On view mode change
+		view.getControlPanel().getGlobalSettingsTab().getViewModeInput().addChangeListener(changeEvent -> {
+			int viewMode = view.getControlPanel().getGlobalSettingsTab().getViewModeInput().getValue();
+			
+			if (viewMode == MapViewMode.GRAPH) {
+				int arrLength = this.modelData.getRows() * this.modelData.getRows();
+				CellData[] dataArr = new CellData[arrLength];
+				int counter = 0;
+				for (int row = 0; row < modelData.getRows(); row++) {
+					for (int col = 0; col < modelData.getCols(); col++) {
+						dataArr[counter++] = modelData.getGrid()[row][col];
+					}
+				}
+				QuickSortCellData.sort(dataArr);
+				counter = 0;
+				for (int row = 0; row < modelData.getRows(); row++) {
+					for (int col = 0; col < modelData.getCols(); col++) {
+						modelData.getGraphGrid()[row][col] = dataArr[counter++];
+					}
+				}
+				this.reflectGraphData();
+			} else if (viewMode == MapViewMode.TOP_DOWN) {
+				this.reflectData();				
+			}
+		});
 		
 		int maxTrees = view.getControlPanel().getGlobalSettingsTab().getMaxTreesInput().getValue();
 		view.getTreeAreasGrid().setMaxTrees(maxTrees);
@@ -112,6 +140,19 @@ public class AppController {
 	
 	private interface ReflectsDataCallback {
 		public void reflectData(int row, int col, int status);
+	}
+	
+	public void reflectGraphData() {
+		int[][] treeCounts = new int[modelData.getRows()][modelData.getCols()];
+		int[][] statuses = new int[modelData.getRows()][modelData.getCols()];
+		
+		for (int row = 0; row < modelData.getRows(); row++) {
+			for (int col = 0; col < modelData.getCols(); col++) {
+				treeCounts[row][col] = modelData.getGraphGrid()[row][col].getTreeCount();
+				statuses[row][col] = modelData.getGraphGrid()[row][col].getStatus();
+			}
+		}
+		view.getTreeAreasGrid().updateGrid(treeCounts, statuses, view.getTreeAreasGrid().getLastSelectedCell());
 	}
 	
 	public void reflectData() {
