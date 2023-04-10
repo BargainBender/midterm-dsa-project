@@ -8,103 +8,135 @@ import java.awt.event.MouseEvent;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
+import model.CellData.CellDataStatus;
+
 /**
  * Visualizing tree density for one large area,
  * split into cells.
  */
 public class TreeAreasGrid extends JPanel {
-	public static final int CELL_SIZE = 50;
+	public static final int CELL_SIZE = 40;
 	public static Color[] CURRENT_SCHEME = CellColorSchemes.INFORMATIVE;
-	private final int ROWS = 10;
-	private final int COLS = 10;
-	private TreeAreasGridCell lastSelectedPanel = null;
-	private TreeAreasGridCell[][] gridPanels;
-
-	public TreeAreasGrid() {
-		this.setLayout(new GridLayout(ROWS, COLS));
-		gridPanels = new TreeAreasGridCell[ROWS][COLS];
-		for (int row = 0; row < ROWS; row++) {
-			for (int col = 0; col < COLS; col++) {
+	private TreeAreasGridCell highlightedCell = null;
+	private TreeAreasGridCell[][] gridCells;
+	private int rows;
+	private int cols;
+	private int maxTrees;
+	
+	public TreeAreasGrid(int rows, int cols) {
+		this.rows = rows;
+		this.cols = cols;
+		this.setLayout(new GridLayout(rows, cols));
+		this.maxTrees = 100;
+		this.gridCells = new TreeAreasGridCell[rows][cols];
+		
+		for (int row = 0; row < this.rows; row++) {
+			for (int col = 0; col < this.cols; col++) {
+				final int currRow = row;
+				final int currCol = col;
 				TreeAreasGridCell panel = new TreeAreasGridCell();
-				panel.addMouseListener(new MouseAdapter() {
-					@Override
-					public void mouseClicked(MouseEvent e) {
-						TreeAreasGridCell clickedPanel = (TreeAreasGridCell) e.getComponent();
-						System.out.println(clickedPanel.getBackground());
-						
-						// If toggled off or selected other cell
-						if (lastSelectedPanel != null) {
-							lastSelectedPanel.setCellColor(lastSelectedPanel.getCellColor());
-							lastSelectedPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-						}
-						
-						// Toggled off
-						if (clickedPanel.equals(lastSelectedPanel)) {
-							clickedPanel.setBackground(lastSelectedPanel.getCellColor());
-							lastSelectedPanel = null;
-						// Selected another cell
-						} else {
-							if (clickedPanel.getCellColor().equals(CellColorSchemes.INFORMATIVE[CellColorSchemes.UNSET])) {
-								clickedPanel.setBackground(clickedPanel.getBackground().darker());
-							} else {
-								clickedPanel.setBackground(clickedPanel.getBackground().brighter());								
-							}
-							clickedPanel.setBorder(BorderFactory.createLineBorder(Color.WHITE));
-							lastSelectedPanel = clickedPanel;
-						}
-					}
-				});
+				panel.addMouseListener(new CellSelectionListener(panel, currRow, currCol));
 				this.add(panel);
-				gridPanels[row][col] = panel;
+				gridCells[row][col] = panel;
 			}
 		}
 	}
+	
+	private class CellSelectionListener extends MouseAdapter {
+        private final TreeAreasGridCell cell;
+        private final int currRow;
+        private final int currCol;
+        private static final Color HIGHLIGHT_COLOR = Color.YELLOW;
+        private static final Color DEFAULT_COLOR = Color.WHITE;
+        
+        public CellSelectionListener(TreeAreasGridCell cell, int row, int col) {
+            this.cell = cell;
+            this.currRow = row;
+            this.currCol = col;
+        }
 
-	/** 
-	 * Helper method to get the row based on the y coordinate of the mouse click
-	 * @param y
-	 * @return
-	 */
-	private int getRow(int y) {
-		int row = (y - gridPanels[0][0].getLocation().y) / CELL_SIZE;
-		if (row < 0 || row >= ROWS) {
-			return -1;
+        @Override
+		public void mousePressed(MouseEvent mouseEvent) {
+			final TreeAreasGridCell clickedPanel = (TreeAreasGridCell) mouseEvent.getComponent();
+			
+			this.cell.setRow(this.currRow);
+			this.cell.setCol(this.currCol);
+			
+			// Check if the clicked cell is already the highlighted cell
+	        if (clickedPanel == highlightedCell) {
+	            // If it is, unhighlight it by setting its background color to the default color
+	        	clickedPanel.setBackground(clickedPanel.getCellColor());
+	        	clickedPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+	        	app.App.view.getControlPanel().openGlobalSettingsTab();
+            	app.App.view.getControlPanel().disableAreaSettingsTab();
+	            // Set highlightedCell to null to indicate that no cell is currently highlighted
+	            highlightedCell = null;
+	        } else {
+	            // If the clicked cell is not already the highlighted cell, unhighlight the previously highlighted cell (if there is one)
+	            if (highlightedCell != null) {
+	                highlightedCell.setBackground(highlightedCell.getCellColor());
+	                highlightedCell.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+	            }
+	            // Highlight the clicked cell by setting its background color to the highlight color
+	            clickedPanel.setBackground(clickedPanel.getCellColor().brighter());
+	            clickedPanel.setBorder(BorderFactory.createLineBorder(Color.WHITE));
+	            app.App.view.getControlPanel().openAreaSettingsTab();
+            	app.App.view.getControlPanel().enableAreaSettingsTab();
+	            // Set highlightedCell to the clicked cell to indicate that it is now highlighted
+	            highlightedCell = clickedPanel;
+	        }
+			
+			try {
+				app.App.view.getControlPanel().getAreaSettingsTab().getTreeCountInput().setValue(this.cell.getTreeCount());
+				app.App.view.getControlPanel().getAreaSettingsTab().getTreeCountInput().userModified = false;
+			} catch (Exception e) {
+				System.err.println(e);
+			}
 		}
-		return row;
-	}
-
-	/**
-	 * Helper method to get the column based on the x coordinate of the mouse click
-	 * @param x
-	 * @return
-	 */
-	private int getCol(int x) {
-		int col = (x - gridPanels[0][0].getLocation().x) / CELL_SIZE;
-		if (col < 0 || col >= COLS) {
-			return -1;
-		}
-		return col;
-	}
-
-	/**
-	 * Helper method to update the color of the panel at the given row and column
-	 * 
-	 * @param row
-	 * @param col
-	 */
-	private void updateGridPanel(int row, int col) {
-		// gridPanels[row][col].setBackground(currentColor);
-	}
+    }
 
 	public int getRows() {
-		return ROWS;
+		return this.rows;
 	}
 
 	public int getCols() {
-		return COLS;
+		return this.cols;
 	}
 
 	public int getCellSize() {
 		return CELL_SIZE;
+	}
+	
+	public int getMaxTrees() {
+		return maxTrees;
+	}
+
+	public void setMaxTrees(int maxTrees) {
+		this.maxTrees = maxTrees;
+	}
+	
+	public TreeAreasGridCell getLastSelectedCell() {
+		return this.highlightedCell;
+	}
+
+	public void updateGrid(int[][] treeCounts, int[][] statuses, TreeAreasGridCell highlightedCell) {
+		for (int row = 0; row < this.rows; row++) {
+			for (int col = 0; col < this.cols; col++) {
+				TreeAreasGridCell currentCell = this.gridCells[row][col];
+				
+				// Issue here: change only reflects on second edit
+				if (currentCell == highlightedCell && !app.App.view.getControlPanel().getAreaSettingsTab().getTreeCountInput().userModified) {
+					app.App.view.getControlPanel().getAreaSettingsTab().getTreeCountInput().userModified = true;
+					continue;
+				}
+				if (statuses[row][col] == CellDataStatus.SET) {
+					currentCell.setTreeCount(treeCounts[row][col], maxTrees);
+				} else if (statuses[row][col] == CellDataStatus.UNSET) {
+					currentCell.unsetValues();
+				} else if (statuses[row][col] == CellDataStatus.NON_PROPERTY) {
+					currentCell.setNonProperty();
+				}
+			}
+		}
 	}
 }
