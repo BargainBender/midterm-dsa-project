@@ -1,7 +1,6 @@
 package view.components;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -14,53 +13,44 @@ import javax.swing.JPanel;
  * split into cells.
  */
 public class TreeAreasGrid extends JPanel {
+	public static final int CELL_SIZE = 50;
+	public static Color[] CURRENT_SCHEME = CellColorSchemes.INFORMATIVE;
 	private final int ROWS = 10;
 	private final int COLS = 10;
-	private final int CELL_SIZE = 50;
-	private int[] lastSelectedCell = { 0, 0 };
-	private final Color defaultCellColor = Color.getHSBColor(0.061f, .80f, 0.69f);
-	private JPanel[][] gridPanels;
+	private TreeAreasGridCell lastSelectedPanel = null;
+	private TreeAreasGridCell[][] gridPanels;
 
 	public TreeAreasGrid() {
 		this.setLayout(new GridLayout(ROWS, COLS));
-		gridPanels = new JPanel[ROWS][COLS];
+		gridPanels = new TreeAreasGridCell[ROWS][COLS];
 		for (int row = 0; row < ROWS; row++) {
 			for (int col = 0; col < COLS; col++) {
-				JPanel panel = new JPanel();
-				panel.setBackground(defaultCellColor);
-				panel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-				panel.setPreferredSize(new Dimension(CELL_SIZE, CELL_SIZE));
+				TreeAreasGridCell panel = new TreeAreasGridCell();
 				panel.addMouseListener(new MouseAdapter() {
 					@Override
 					public void mouseClicked(MouseEvent e) {
-						JPanel clickedPanel = (JPanel) e.getComponent();
-						int row = -1, col = -1;
-						for (int i = 0; i < ROWS; i++) {
-							for (int j = 0; j < COLS; j++) {
-								if (clickedPanel == gridPanels[i][j]) {
-									row = i;
-									col = j;
-									break;
-								}
-							}
+						TreeAreasGridCell clickedPanel = (TreeAreasGridCell) e.getComponent();
+						System.out.println(clickedPanel.getBackground());
+						
+						// If toggled off or selected other cell
+						if (lastSelectedPanel != null) {
+							lastSelectedPanel.setCellColor(lastSelectedPanel.getCellColor());
+							lastSelectedPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 						}
-						if (lastSelectedCell[0] == row && lastSelectedCell[1] == col) {
-							lastSelectedCell[0] = -1;
-							lastSelectedCell[1] = -1;
-							gridPanels[row][col].setBackground(defaultCellColor);
+						
+						// Toggled off
+						if (clickedPanel.equals(lastSelectedPanel)) {
+							clickedPanel.setBackground(lastSelectedPanel.getCellColor());
+							lastSelectedPanel = null;
+						// Selected another cell
 						} else {
-							for (JPanel[] gpRows : gridPanels) {
-								for (JPanel gpCell : gpRows) {
-									gpCell.setBackground(defaultCellColor);
-								}
+							if (clickedPanel.getCellColor().equals(CellColorSchemes.INFORMATIVE[CellColorSchemes.UNSET])) {
+								clickedPanel.setBackground(clickedPanel.getBackground().darker());
+							} else {
+								clickedPanel.setBackground(clickedPanel.getBackground().brighter());								
 							}
-							lastSelectedCell[0] = row;
-							lastSelectedCell[1] = col;
-							// highlighting function
-							if (row != -1 && col != -1) {
-								Color brighterBg = gridPanels[row][col].getBackground().brighter();
-								gridPanels[row][col].setBackground(brighterBg);
-							}
+							clickedPanel.setBorder(BorderFactory.createLineBorder(Color.WHITE));
+							lastSelectedPanel = clickedPanel;
 						}
 					}
 				});
