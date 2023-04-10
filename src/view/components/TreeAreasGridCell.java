@@ -6,16 +6,20 @@ import java.awt.Dimension;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
+import model.CellData.CellDataStatus;
+
 public class TreeAreasGridCell extends JPanel {
 	
 	private Color cellColor;
 	private int treeCount;
+	private int status;
 	private int row;
 	private int col;
 
 	public TreeAreasGridCell() {
 		this.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		this.setPreferredSize(new Dimension(TreeAreasGrid.CELL_SIZE, TreeAreasGrid.CELL_SIZE));
+		this.status = CellDataStatus.UNSET;
 	}
 
 	public Color getCellColor() {
@@ -35,7 +39,7 @@ public class TreeAreasGridCell extends JPanel {
 	 * Unsets the value(s) for the cell. This should be the base values for the cell.
 	 */
 	public void unsetValues() {
-		this.treeCount = 0;
+		this.status = CellDataStatus.UNSET;
 		this.setCellColor(TreeAreasGrid.CURRENT_SCHEME[CellColorSchemes.UNSET]);
 	}
 	
@@ -43,19 +47,32 @@ public class TreeAreasGridCell extends JPanel {
 	 * Sets the cell to not be part of user's property.
 	 */
 	public void setNonProperty() {
-		this.treeCount = 0;
+		this.status = CellDataStatus.NON_PROPERTY;
 		this.setCellColor(TreeAreasGrid.CURRENT_SCHEME[CellColorSchemes.NON_PROPERTY]);
+	}
+	
+	/**
+	 * Sets the cell to be part of user's property.
+	 */
+	public void setProperty() {
+		this.status = CellDataStatus.SET;
+	}
+	
+	public int getStatus() {
+		return this.status;
 	}
 
 	/**
 	 * Setting this automatically calls setCellColor(), and based on percentage, selects
 	 * a color for CellColorSchemes.
 	 */
-	public void setTreeCount(int treeCount, int maxTreeCount) {
-		this.treeCount = treeCount;
-		if (treeCount < 0) {
+	public void setTreeCount(int treeCount, int maxTreeCount) {		
+		if (treeCount < 0 || this.status != CellDataStatus.SET) {
 			return;
 		}
+		
+		this.treeCount = treeCount;
+
 		try {
 			double percentage = Math.ceil(((treeCount * 100) / maxTreeCount));
 			if      (percentage < 1) this.setCellColor(TreeAreasGrid.CURRENT_SCHEME[10]);

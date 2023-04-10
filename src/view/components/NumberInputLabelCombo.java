@@ -10,12 +10,12 @@ import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.event.ChangeListener;
 
-public class InputLabelCombo extends JPanel {
+public class NumberInputLabelCombo extends JPanel {
 	private JLabel label;
 	private JSpinner input;
 	public boolean userModified = false;
 
-	public InputLabelCombo(String title) {
+	public NumberInputLabelCombo(String title) {
 		this.setLayout(new BorderLayout());
 		this.setMaximumSize(new Dimension(Integer.MAX_VALUE, this.getPreferredSize().height));
 		this.setBorder(ControlPanel.ELEMENTS_VERTICAL_SPACING);
