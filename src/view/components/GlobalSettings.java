@@ -2,8 +2,6 @@ package view.components;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 /**
@@ -13,6 +11,7 @@ import javax.swing.JScrollPane;
  *
  */
 public class GlobalSettings extends JScrollPane {
+	private InputLabelCombo maxTreesInput;
 	public GlobalSettings() {
 		this.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		this.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -20,18 +19,20 @@ public class GlobalSettings extends JScrollPane {
 		JPanel contents = new JPanel();
 		contents.setLayout(new BoxLayout(contents, BoxLayout.Y_AXIS));
 		contents.setBorder(ControlPanel.PANEL_HORIZONTAL_PADDING);
-		InputLabelCombo areaDensity = new InputLabelCombo("Area density");
+		maxTreesInput = new InputLabelCombo("Max trees per area");
+		try {
+			maxTreesInput.setValue(100);
+		} catch (Exception e) {
+			System.err.println(e);
+		}
 
-		contents.add(areaDensity);
-		JButton test = new JButton("Test");
-		test.addActionListener(actionEvent -> {
-			System.out.println(areaDensity.getValue());
-		});
-
-		contents.add(test);
-		contents.add(new JLabel("test"));
+		contents.add(maxTreesInput);
 
 		contents.add(Box.createVerticalGlue()); // Moves all elements to the top if possible
 		this.setViewportView(contents);
+	}
+	
+	public InputLabelCombo getMaxTreesInput() {
+		return this.maxTreesInput;
 	}
 }

@@ -10,11 +10,12 @@ public class TreeAreasGridCell extends JPanel {
 	
 	private Color cellColor;
 	private int treeCount;
+	private int row;
+	private int col;
 
 	public TreeAreasGridCell() {
 		this.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		this.setPreferredSize(new Dimension(TreeAreasGrid.CELL_SIZE, TreeAreasGrid.CELL_SIZE));
-		this.unsetValues();
 	}
 
 	public Color getCellColor() {
@@ -52,20 +53,43 @@ public class TreeAreasGridCell extends JPanel {
 	 */
 	public void setTreeCount(int treeCount, int maxTreeCount) {
 		this.treeCount = treeCount;
-		float percentage = ((treeCount * 100) / maxTreeCount);
-		System.out.println(String.format("%.2f", percentage));
+		if (treeCount < 0) {
+			return;
+		}
+		try {
+			double percentage = Math.ceil(((treeCount * 100) / maxTreeCount));
+			if      (percentage < 1) this.setCellColor(TreeAreasGrid.CURRENT_SCHEME[10]);
+			else if (percentage >= 1 && percentage < 11) this.setCellColor(TreeAreasGrid.CURRENT_SCHEME[9]);
+			else if (percentage >= 11 && percentage < 21) this.setCellColor(TreeAreasGrid.CURRENT_SCHEME[8]);
+			else if (percentage >= 21 && percentage < 31) this.setCellColor(TreeAreasGrid.CURRENT_SCHEME[7]);
+			else if (percentage >= 31 && percentage < 41) this.setCellColor(TreeAreasGrid.CURRENT_SCHEME[6]);
+			else if (percentage >= 41 && percentage < 51) this.setCellColor(TreeAreasGrid.CURRENT_SCHEME[5]);
+			else if (percentage >= 51 && percentage < 61) this.setCellColor(TreeAreasGrid.CURRENT_SCHEME[4]);
+			else if (percentage >= 61 && percentage < 71) this.setCellColor(TreeAreasGrid.CURRENT_SCHEME[3]);
+			else if (percentage >= 71 && percentage < 81) this.setCellColor(TreeAreasGrid.CURRENT_SCHEME[2]);
+			else if (percentage >= 81 && percentage < 91) this.setCellColor(TreeAreasGrid.CURRENT_SCHEME[1]);
+			else if (percentage >= 91) this.setCellColor(TreeAreasGrid.CURRENT_SCHEME[0]);
+//			System.out.println(String.format("%.2f", percentage));
+		} catch (ArithmeticException e) {
+			this.setCellColor(TreeAreasGrid.CURRENT_SCHEME[10]);
+		}
 		
-		if      (percentage < 1) this.setCellColor(TreeAreasGrid.CURRENT_SCHEME[10]);
-		else if (percentage >= 1 && percentage < 11) this.setCellColor(TreeAreasGrid.CURRENT_SCHEME[9]);
-		else if (percentage >= 11 && percentage < 21) this.setCellColor(TreeAreasGrid.CURRENT_SCHEME[8]);
-		else if (percentage >= 21 && percentage < 31) this.setCellColor(TreeAreasGrid.CURRENT_SCHEME[7]);
-		else if (percentage >= 31 && percentage < 41) this.setCellColor(TreeAreasGrid.CURRENT_SCHEME[6]);
-		else if (percentage >= 41 && percentage < 51) this.setCellColor(TreeAreasGrid.CURRENT_SCHEME[5]);
-		else if (percentage >= 51 && percentage < 61) this.setCellColor(TreeAreasGrid.CURRENT_SCHEME[4]);
-		else if (percentage >= 61 && percentage < 71) this.setCellColor(TreeAreasGrid.CURRENT_SCHEME[3]);
-		else if (percentage >= 71 && percentage < 81) this.setCellColor(TreeAreasGrid.CURRENT_SCHEME[2]);
-		else if (percentage >= 81 && percentage < 91) this.setCellColor(TreeAreasGrid.CURRENT_SCHEME[1]);
-		else if (percentage >= 91) this.setCellColor(TreeAreasGrid.CURRENT_SCHEME[0]);
+	}
+	
+	public int getRow() {
+		return row;
+	}
+
+	public void setRow(int row) {
+		this.row = row;
+	}
+
+	public int getCol() {
+		return col;
+	}
+
+	public void setCol(int col) {
+		this.col = col;
 	}
 
 }

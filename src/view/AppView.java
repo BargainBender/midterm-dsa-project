@@ -10,16 +10,18 @@ import view.components.ControlPanel;
 import view.components.TreeAreasGrid;
 
 public class AppView extends JFrame {
-	public AppView() {
+	private ControlPanel cp;
+	private TreeAreasGrid tag;
+	public AppView(int rows, int cols) {
 		this.setTitle("Color Grid");
 		this.setLayout(new BorderLayout());
-		TreeAreasGrid teg = new TreeAreasGrid();
-		this.setSize(teg.getCellSize() * teg.getCols(), teg.getCellSize() * teg.getRows() + 100);
+		this.tag = new TreeAreasGrid(rows, cols);
+		this.setSize(tag.getCellSize() * tag.getCols(), tag.getCellSize() * tag.getRows() + 100);
 
-		ControlPanel cp = new ControlPanel();
+		this.cp = new ControlPanel();
 
 		// Create a split pane to hold the scroll pane and the control panel
-		JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, teg, cp);
+		JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, tag, cp);
 		split.setResizeWeight(1.0); // Make the grid panel take up all available space
 
 		AppMenu menuBar = new AppMenu();
@@ -27,7 +29,16 @@ public class AppView extends JFrame {
 		// Add the split pane to the frame		
 		this.add(menuBar, BorderLayout.NORTH);
 		this.add(split, BorderLayout.CENTER);
-		this.setSize(teg.getCellSize() * teg.getCols() * 2, teg.getCellSize() * teg.getRows());
+		this.setSize(tag.getCellSize() * tag.getCols() * 2, tag.getCellSize() * tag.getRows());
+		this.pack();
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	}
+	
+	public ControlPanel getControlPanel() {
+		return this.cp;
+	}
+	
+	public TreeAreasGrid getTreeAreasGrid() {
+		return this.tag;
 	}
 }

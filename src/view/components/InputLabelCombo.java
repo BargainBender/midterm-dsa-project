@@ -8,10 +8,12 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
+import javax.swing.event.ChangeListener;
 
 public class InputLabelCombo extends JPanel {
 	private JLabel label;
 	private JSpinner input;
+	public boolean userModified = false;
 
 	public InputLabelCombo(String title) {
 		this.setLayout(new BorderLayout());
@@ -33,5 +35,20 @@ public class InputLabelCombo extends JPanel {
 
 	public int getValue() {
 		return (Integer) this.input.getValue();
+	}
+	
+	public void resetValue() {
+		this.input.setValue(0);
+	}
+	
+	public void setValue(int value) throws Exception {
+		if (value < 0) {
+			throw new Exception("Cannot set value less than 0!");
+		}
+		this.input.setValue(value);
+	}
+	
+	public void addChangeListener(ChangeListener changeListener) {
+		this.input.addChangeListener(changeListener);
 	}
 }
