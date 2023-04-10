@@ -11,7 +11,7 @@ import javax.swing.JScrollPane;
  *
  */
 public class GlobalSettings extends JScrollPane {
-	private InputLabelCombo maxTreesInput;
+	private NumberInputLabelCombo maxTreesInput;
 	public GlobalSettings() {
 		this.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		this.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -19,7 +19,7 @@ public class GlobalSettings extends JScrollPane {
 		JPanel contents = new JPanel();
 		contents.setLayout(new BoxLayout(contents, BoxLayout.Y_AXIS));
 		contents.setBorder(ControlPanel.PANEL_HORIZONTAL_PADDING);
-		maxTreesInput = new InputLabelCombo("Max trees per area");
+		maxTreesInput = new NumberInputLabelCombo("Max trees per area");
 		try {
 			maxTreesInput.setValue(100);
 		} catch (Exception e) {
@@ -32,7 +32,7 @@ public class GlobalSettings extends JScrollPane {
 		this.setViewportView(contents);
 	}
 	
-	public InputLabelCombo getMaxTreesInput() {
+	public NumberInputLabelCombo getMaxTreesInput() {
 		return this.maxTreesInput;
 	}
 }

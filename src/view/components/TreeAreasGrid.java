@@ -1,6 +1,7 @@
 package view.components;
 
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.GridLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -46,8 +47,6 @@ public class TreeAreasGrid extends JPanel {
         private final TreeAreasGridCell cell;
         private final int currRow;
         private final int currCol;
-        private static final Color HIGHLIGHT_COLOR = Color.YELLOW;
-        private static final Color DEFAULT_COLOR = Color.WHITE;
         
         public CellSelectionListener(TreeAreasGridCell cell, int row, int col) {
             this.cell = cell;
@@ -56,11 +55,31 @@ public class TreeAreasGrid extends JPanel {
         }
 
         @Override
+		public void mouseEntered(MouseEvent mouseEvent) {
+        	final TreeAreasGridCell clickedPanel = (TreeAreasGridCell) mouseEvent.getComponent();
+        	if (AppMenu.getStatusTool() != -1) {
+        		clickedPanel.setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
+        	}
+		}
+
+		@Override
+		public void mouseExited(MouseEvent mouseEvent) {
+			final TreeAreasGridCell clickedPanel = (TreeAreasGridCell) mouseEvent.getComponent();
+			clickedPanel.setCursor(new Cursor(Cursor.DEFAULT_CURSOR)); 
+		}
+
+		@Override
 		public void mousePressed(MouseEvent mouseEvent) {
+			
+			
 			final TreeAreasGridCell clickedPanel = (TreeAreasGridCell) mouseEvent.getComponent();
 			
 			this.cell.setRow(this.currRow);
 			this.cell.setCol(this.currCol);
+			
+			if (AppMenu.getStatusTool() != -1) {
+				return;
+			}
 			
 			// Check if the clicked cell is already the highlighted cell
 	        if (clickedPanel == highlightedCell) {
@@ -85,6 +104,8 @@ public class TreeAreasGrid extends JPanel {
 	            // Set highlightedCell to the clicked cell to indicate that it is now highlighted
 	            highlightedCell = clickedPanel;
 	        }
+	        
+	        app.App.view.getControlPanel().getAreaSettingsTab().getStatusInput().setValue(clickedPanel.getStatus());
 			
 			try {
 				app.App.view.getControlPanel().getAreaSettingsTab().getTreeCountInput().setValue(this.cell.getTreeCount());
@@ -118,6 +139,14 @@ public class TreeAreasGrid extends JPanel {
 	public TreeAreasGridCell getLastSelectedCell() {
 		return this.highlightedCell;
 	}
+	
+	public void addCellMouseListener(MouseAdapter mouseAdapter) {
+		for (int row = 0; row < this.rows; row++) {
+			for (int col = 0; col < this.cols; col++) {
+				gridCells[row][col].addMouseListener(mouseAdapter);
+			}
+		}
+	}
 
 	public void updateGrid(int[][] treeCounts, int[][] statuses, TreeAreasGridCell highlightedCell) {
 		for (int row = 0; row < this.rows; row++) {
@@ -130,6 +159,7 @@ public class TreeAreasGrid extends JPanel {
 					continue;
 				}
 				if (statuses[row][col] == CellDataStatus.SET) {
+					currentCell.setProperty();
 					currentCell.setTreeCount(treeCounts[row][col], maxTrees);
 				} else if (statuses[row][col] == CellDataStatus.UNSET) {
 					currentCell.unsetValues();
