@@ -1,44 +1,46 @@
 package controller;
 
+import java.util.ArrayList;
+
 import model.CellData;
 
 public class QuickSortCellData {
     
-    public static void sort(CellData[] arr) {
-        if (arr == null || arr.length == 0) {
+    public static void sort(ArrayList<CellData> list) {
+        if (list == null || list.size() == 0) {
             return;
         }
-        quickSort(arr, 0, arr.length - 1);
+        quickSort(list, 0, list.size() - 1);
     }
 
-    private static void quickSort(CellData[] arr, int left, int right) {
+    private static void quickSort(ArrayList<CellData> list, int left, int right) {
         if (left >= right) {
             return;
         }
 
-        int pivotIndex = partition(arr, left, right);
-        quickSort(arr, left, pivotIndex - 1);
-        quickSort(arr, pivotIndex + 1, right);
+        int pivotIndex = partition(list, left, right);
+        quickSort(list, left, pivotIndex - 1);
+        quickSort(list, pivotIndex + 1, right);
     }
 
-    private static int partition(CellData[] arr, int left, int right) {
-        int pivot = arr[right].getTreeCount();
+    private static int partition(ArrayList<CellData> list, int left, int right) {
+        int pivot = list.get(right).getTreeCount();
         int i = left - 1;
 
         for (int j = left; j <= right - 1; j++) {
-            if (arr[j].getTreeCount() <= pivot) {
+            if (list.get(j).getTreeCount() <= pivot) {
                 i++;
-                swap(arr, i, j);
+                swap(list, i, j);
             }
         }
 
-        swap(arr, i + 1, right);
+        swap(list, i + 1, right);
         return i + 1;
     }
 
-    private static void swap(CellData[] arr, int i, int j) {
-        CellData temp = arr[i];
-        arr[i] = arr[j];
-        arr[j] = temp;
+    private static void swap(ArrayList<CellData> list, int i, int j) {
+        CellData temp = list.get(i);
+        list.set(i, list.get(j));
+        list.set(j, temp);
     }
 }

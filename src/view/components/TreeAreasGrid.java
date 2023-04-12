@@ -17,7 +17,7 @@ import view.components.GlobalSettings.MapViewMode;
  * split into cells.
  */
 public class TreeAreasGrid extends JPanel {
-	public static final int CELL_SIZE = 40;
+	public static final int CELL_SIZE = 30;
 	public static Color[] CURRENT_SCHEME = CellColorSchemes.INFORMATIVE;
 	private TreeAreasGridCell highlightedCell = null;
 	private TreeAreasGridCell[][] gridCells;
@@ -71,7 +71,6 @@ public class TreeAreasGrid extends JPanel {
 
 		@Override
 		public void mousePressed(MouseEvent mouseEvent) {
-			
 			
 			final TreeAreasGridCell clickedPanel = (TreeAreasGridCell) mouseEvent.getComponent();
 			
@@ -139,6 +138,14 @@ public class TreeAreasGrid extends JPanel {
 	
 	public TreeAreasGridCell getLastSelectedCell() {
 		return this.highlightedCell;
+	}
+	
+	public void removeHighlight() {
+		if (this.highlightedCell != null) {
+			this.highlightedCell.setBackground(highlightedCell.getCellColor());
+			this.highlightedCell.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+			this.highlightedCell = null;			
+		}
 	}
 	
 	public void addCellMouseListener(MouseAdapter mouseAdapter) {

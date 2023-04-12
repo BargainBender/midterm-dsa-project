@@ -2,6 +2,7 @@ package controller;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 
 import model.CellData;
 import model.CellData.CellDataStatus;
@@ -91,22 +92,22 @@ public class AppController {
 		
 		// On view mode change
 		view.getControlPanel().getGlobalSettingsTab().getViewModeInput().addChangeListener(changeEvent -> {
+			view.getTreeAreasGrid().removeHighlight();
+			app.App.view.getControlPanel().openGlobalSettingsTab();
+			app.App.view.getControlPanel().disableAreaSettingsTab();
 			int viewMode = view.getControlPanel().getGlobalSettingsTab().getViewModeInput().getValue();
-			
 			if (viewMode == MapViewMode.GRAPH) {
-				int arrLength = this.modelData.getRows() * this.modelData.getRows();
-				CellData[] dataArr = new CellData[arrLength];
-				int counter = 0;
+				ArrayList<CellData> dataArr = new ArrayList<>();
 				for (int row = 0; row < modelData.getRows(); row++) {
 					for (int col = 0; col < modelData.getCols(); col++) {
-						dataArr[counter++] = modelData.getGrid()[row][col];
+						dataArr.add(modelData.getGrid()[row][col]);
 					}
 				}
 				QuickSortCellData.sort(dataArr);
-				counter = 0;
+				int counter = 0;
 				for (int row = 0; row < modelData.getRows(); row++) {
 					for (int col = 0; col < modelData.getCols(); col++) {
-						modelData.getGraphGrid()[row][col] = dataArr[counter++];
+						modelData.getGraphGrid()[row][col] = dataArr.get(counter++);
 					}
 				}
 				this.reflectGraphData();
