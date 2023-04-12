@@ -5,7 +5,6 @@ import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-import model.CellData.CellDataStatus;
 import view.components.DropdownInputLabelCombo.DropDownOption;
 /**
  *  global settings is the setting you see in the right of the main application 
