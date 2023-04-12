@@ -73,6 +73,11 @@ public class TreeAreasGrid extends JPanel {
 		public void mousePressed(MouseEvent mouseEvent) {
 			
 			final TreeAreasGridCell clickedPanel = (TreeAreasGridCell) mouseEvent.getComponent();
+			int viewMode = app.App.view.getControlPanel().getGlobalSettingsTab().getViewModeInput().getValue();
+			
+			if (viewMode == MapViewMode.GRAPH) {
+				return;
+			}
 			
 			this.cell.setRow(this.currRow);
 			this.cell.setCol(this.currCol);
@@ -136,8 +141,20 @@ public class TreeAreasGrid extends JPanel {
 		this.maxTrees = maxTrees;
 	}
 	
-	public TreeAreasGridCell getLastSelectedCell() {
+	public TreeAreasGridCell getHighlightedCell() {
 		return this.highlightedCell;
+	}
+	
+	public void setHighlightedCell(TreeAreasGridCell cell) {
+		TreeAreasGridCell hcell = this.gridCells[cell.getRow()][cell.getCol()];
+		
+            // Highlight the clicked cell by setting its background color to the highlight color
+            hcell.setBackground(hcell.getCellColor().brighter());
+            hcell.setBorder(BorderFactory.createLineBorder(Color.WHITE));
+            app.App.view.getControlPanel().openAreaSettingsTab();
+        	app.App.view.getControlPanel().enableAreaSettingsTab();
+            // Set highlightedCell to the clicked cell to indicate that it is now highlighted
+        	this.highlightedCell = cell;
 	}
 	
 	public void removeHighlight() {
@@ -154,6 +171,10 @@ public class TreeAreasGrid extends JPanel {
 				gridCells[row][col].addMouseListener(mouseAdapter);
 			}
 		}
+	}
+	
+	public TreeAreasGridCell[][] getGridCells() {
+		return this.gridCells;
 	}
 
 	public void updateGrid(int[][] treeCounts, int[][] statuses, TreeAreasGridCell highlightedCell) {

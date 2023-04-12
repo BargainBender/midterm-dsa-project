@@ -43,6 +43,7 @@ public class NumberInputLabelCombo extends JPanel {
 	
 	public void setValue(int value) throws Exception {
 		if (value < 0) {
+			this.input.setValue(0);
 			throw new Exception("Cannot set value less than 0!");
 		}
 		this.input.setValue(value);
