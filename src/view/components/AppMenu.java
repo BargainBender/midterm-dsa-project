@@ -8,8 +8,10 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JRadioButton;
+import javax.tools.Tool;
 
 import model.CellData.CellDataStatus;
+import view.components.GlobalSettings.MapViewMode;
 
 public class AppMenu extends JMenuBar {
 	private static int statusTool = -1;
@@ -33,28 +35,29 @@ public class AppMenu extends JMenuBar {
 	}
 	
 	private class ToolMenu extends JMenu {
+		private static ButtonGroup statusGroup;
 		ToolMenu() {
 			this.setText("Tools");
 			
 			JMenu setStatus = new JMenu("Set status");
 			
-			ButtonGroup statusGroup = new ButtonGroup();
+			ToolMenu.statusGroup = new ButtonGroup();
 			JRadioButton unset = new JRadioButton("Unset");
 			unset.setActionCommand("UNSET");
-			unset.addActionListener(new StatusGroupActionListener(statusGroup));
+			unset.addActionListener(new StatusGroupActionListener(ToolMenu.statusGroup));
 			
 			JRadioButton set = new JRadioButton("Set");
 			set.setActionCommand("SET");
-			set.addActionListener(new StatusGroupActionListener(statusGroup));
+			set.addActionListener(new StatusGroupActionListener(ToolMenu.statusGroup));
 			
 			
 			JRadioButton nonProperty = new JRadioButton("Non-property");
 			nonProperty.setActionCommand("NON_PROPERTY");
-			nonProperty.addActionListener(new StatusGroupActionListener(statusGroup));
+			nonProperty.addActionListener(new StatusGroupActionListener(ToolMenu.statusGroup));
 			
-			statusGroup.add(unset);
-			statusGroup.add(set);
-			statusGroup.add(nonProperty);
+			ToolMenu.statusGroup.add(unset);
+			ToolMenu.statusGroup.add(set);
+			ToolMenu.statusGroup.add(nonProperty);
 			
 			setStatus.add(unset);
 			setStatus.add(set);
@@ -80,8 +83,9 @@ public class AppMenu extends JMenuBar {
 		AppMenu.statusTool = CellDataStatus.NON_PROPERTY;
 	}
 	
-	public void useNoStatusTool() {
+	public static void useNoStatusTool() {
 		AppMenu.statusTool = -1;
+		ToolMenu.statusGroup.clearSelection();
 	}
 	
 	private class StatusGroupActionListener implements ActionListener {
@@ -93,6 +97,13 @@ public class AppMenu extends JMenuBar {
 		
 		@Override
 		public void actionPerformed(ActionEvent e) {
+			int viewMode = app.App.view.getControlPanel().getGlobalSettingsTab().getViewModeInput().getValue();
+			
+			if (viewMode == MapViewMode.GRAPH) {
+				AppMenu.statusTool = -1;
+				ToolMenu.statusGroup.clearSelection();
+				return;
+			}
 			String statusToolSelected = statusGroup.getSelection().getActionCommand();
 			int statusTool = -1;
 			switch (statusToolSelected) {

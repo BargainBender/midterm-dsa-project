@@ -40,6 +40,7 @@ public class TreeAreasGridCell extends JPanel {
 	 */
 	public void unsetValues() {
 		this.status = CellDataStatus.UNSET;
+		this.treeCount = -2;
 		this.setCellColor(TreeAreasGrid.CURRENT_SCHEME[CellColorSchemes.UNSET]);
 	}
 	
@@ -48,6 +49,7 @@ public class TreeAreasGridCell extends JPanel {
 	 */
 	public void setNonProperty() {
 		this.status = CellDataStatus.NON_PROPERTY;
+		this.treeCount = -1;
 		this.setCellColor(TreeAreasGrid.CURRENT_SCHEME[CellColorSchemes.NON_PROPERTY]);
 	}
 	
@@ -66,7 +68,7 @@ public class TreeAreasGridCell extends JPanel {
 	 * Setting this automatically calls setCellColor(), and based on percentage, selects
 	 * a color for CellColorSchemes.
 	 */
-	public void setTreeCount(int treeCount, int maxTreeCount) {		
+	public void setTreeCount(int treeCount, int maxTreeCount) {
 		if (treeCount < 0 || this.status != CellDataStatus.SET) {
 			return;
 		}
