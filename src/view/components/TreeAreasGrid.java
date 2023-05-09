@@ -73,6 +73,7 @@ public class TreeAreasGrid extends JPanel {
 		public void mousePressed(MouseEvent mouseEvent) {
 			
 			final TreeAreasGridCell clickedPanel = (TreeAreasGridCell) mouseEvent.getComponent();
+			
 			int viewMode = app.App.view.getControlPanel().getGlobalSettingsTab().getViewModeInput().getValue();
 			
 			if (viewMode == MapViewMode.GRAPH) {
@@ -82,7 +83,20 @@ public class TreeAreasGrid extends JPanel {
 			this.cell.setRow(this.currRow);
 			this.cell.setCol(this.currCol);
 			
-			if (AppMenu.getStatusTool() != -1) {
+			// When a tool is selected, update cell on click
+			if (AppMenu.getStatusTool() != -1 && clickedPanel != null) {
+				app.App.controller.getModelData().getGrid()[clickedPanel.getRow()][clickedPanel.getCol()].setStatus(AppMenu.getStatusTool());
+				
+				if (AppMenu.getStatusTool() == CellDataStatus.UNSET) {
+					clickedPanel.unsetValues();
+					app.App.controller.getModelData().getGrid()[clickedPanel.getRow()][clickedPanel.getCol()].setTreeCount(0);
+				} else if (AppMenu.getStatusTool() == CellDataStatus.SET && clickedPanel.getStatus() != CellDataStatus.SET) {
+					clickedPanel.setProperty();
+					clickedPanel.setTreeCount(0, maxTrees);
+				} else if (AppMenu.getStatusTool() == CellDataStatus.NON_PROPERTY) {
+					clickedPanel.setNonProperty();
+					app.App.controller.getModelData().getGrid()[clickedPanel.getRow()][clickedPanel.getCol()].setTreeCount(0);
+				}
 				return;
 			}
 			

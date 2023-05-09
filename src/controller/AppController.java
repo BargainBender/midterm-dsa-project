@@ -1,11 +1,8 @@
 package controller;
 
 import java.awt.event.ItemEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
-import app.App;
 import model.CellData;
 import model.CellData.CellDataStatus;
 import model.GridData;
@@ -71,6 +68,9 @@ public class AppController {
 			
 			int status = view.getControlPanel().getAreaSettingsTab().getStatusInput().getValue();
 			TreeAreasGridCell lastSelectedCell = view.getTreeAreasGrid().getHighlightedCell();
+			if (lastSelectedCell == null) {
+				return;
+			}
 			CellData currentWorkingData = this.modelData.getGrid()[lastSelectedCell.getRow()][lastSelectedCell.getCol()];
 			currentWorkingData.setStatus(status);
 			if (status == CellDataStatus.UNSET) {
@@ -84,9 +84,6 @@ public class AppController {
 			this.reflectData();
 			this.view.getTreeAreasGrid().setHighlightedCell(lastSelectedCell);
 		});
-		
-		// When a tool is selected, update cell on click
-		view.getTreeAreasGrid().addCellMouseListener(new UseStatusToolListener());
 		
 		// On view mode change
 		view.getControlPanel().getGlobalSettingsTab().getViewModeInput().addChangeListener(changeEvent -> {
@@ -120,44 +117,6 @@ public class AppController {
 		
 		int maxTrees = view.getControlPanel().getGlobalSettingsTab().getMaxTreesInput().getValue();
 		view.getTreeAreasGrid().setMaxTrees(maxTrees);
-	}
-	
-	private class UseStatusToolListener extends MouseAdapter {
-		
-		public UseStatusToolListener() {
-		}
-		
-		@Override
-		public void mousePressed(MouseEvent mouseEvent) {
-			int statusTool = AppMenu.getStatusTool();
-			if (statusTool == -1) {
-				return;
-			}
-			
-			final TreeAreasGridCell clickedPanel = (TreeAreasGridCell) mouseEvent.getComponent();
-			if (statusTool == CellDataStatus.UNSET) {
-				app.App.controller.getModelData().getGrid()[clickedPanel.getRow()][clickedPanel.getCol()].setTreeCount(-2);
-			} else if (statusTool == CellDataStatus.NON_PROPERTY) {
-				App.controller.getModelData().getGrid()[clickedPanel.getRow()][clickedPanel.getCol()].setTreeCount(-1);
-			}
-			
-			modelData.getGrid()[clickedPanel.getRow()][clickedPanel.getCol()].setStatus(statusTool);
-			System.out.println(modelData.getGrid()[clickedPanel.getCol()][clickedPanel.getCol()].getStatus());
-			int[][] treeCounts = new int[modelData.getRows()][modelData.getCols()];
-			int[][] statuses = new int[modelData.getRows()][modelData.getCols()];
-			
-			for (int row = 0; row < modelData.getRows(); row++) {
-				for (int col = 0; col < modelData.getCols(); col++) {
-					treeCounts[row][col] = modelData.getGrid()[row][col].getTreeCount();
-					statuses[row][col] = modelData.getGrid()[row][col].getStatus();
-				}
-			}
-			view.getTreeAreasGrid().updateGrid(treeCounts, statuses, view.getTreeAreasGrid().getHighlightedCell());
-		}
-	}
-	
-	private interface ReflectsDataCallback {
-		public void reflectData(int row, int col, int status);
 	}
 	
 	public void reflectGraphData() {
