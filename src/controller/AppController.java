@@ -87,16 +87,24 @@ public class AppController {
 			int viewMode = view.getControlPanel().getGlobalSettingsTab().getViewModeInput().getValue();
 			if (viewMode == MapViewMode.GRAPH) {
 				ArrayList<CellData> dataArr = new ArrayList<>();
-				for (int row = 0; row < modelData.getRows(); row++) {
-					for (int col = 0; col < modelData.getCols(); col++) {
-						dataArr.add(modelData.getGrid()[row][col]);
+				for (int row = 0; row < this.modelData.getRows(); row++) {
+					for (int col = 0; col < this.modelData.getCols(); col++) {
+						CellData currentWorkingData = this.modelData.getGrid()[row][col];
+						if (currentWorkingData.getStatus() == CellDataStatus.UNSET) {
+							currentWorkingData.setTreeCount(-2);
+						} else if (currentWorkingData.getStatus() == CellDataStatus.NON_PROPERTY) {
+							currentWorkingData.setTreeCount(-1);
+						} else if (currentWorkingData.getStatus() == CellDataStatus.SET && currentWorkingData.getTreeCount() < 0) {
+							currentWorkingData.setTreeCount(0);
+						}
+						dataArr.add(this.modelData.getGrid()[row][col]);
 					}
 				}
-				QuickSortCellData.sort(dataArr);
+				MergeSortCellData.sort(dataArr);
 				int counter = 0;
-				for (int row = 0; row < modelData.getRows(); row++) {
-					for (int col = 0; col < modelData.getCols(); col++) {
-						modelData.getGraphGrid()[row][col] = dataArr.get(counter++);
+				for (int row = 0; row < this.modelData.getRows(); row++) {
+					for (int col = 0; col < this.modelData.getCols(); col++) {
+						this.modelData.getGraphGrid()[row][col] = dataArr.get(counter++);
 					}
 				}
 				this.reflectGraphData();
