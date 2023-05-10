@@ -9,16 +9,18 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class TreeFileUtilities {
+	
+	public record TreeFileData(GridData grid, int maxTrees) {}
 
-	public GridData loadTreeFile(String path) throws FileNotFoundException, IOException, NumberFormatException {
+	public TreeFileData loadTreeFile(String path) throws FileNotFoundException, IOException, NumberFormatException {
 		RandomAccessFile reader = new RandomAccessFile(path, "r");
-		boolean rowsSet = false, colsSet = false;
-		int rows = 0, cols = 0;
+		boolean rowsSet = false, colsSet = false, maxTreesSet = false;
+		int rows = 0, cols = 0, maxTrees = 0;
 		String line = "";
 		Pattern pattern;
 		Matcher matcher;
-		while ((line = reader.readLine()) != null && !(rowsSet && colsSet)) {
-			pattern = Pattern.compile("^(rows|cols):[ ]*(\\d+)$");
+		while ((line = reader.readLine()) != null && !(rowsSet && colsSet && maxTreesSet)) {
+			pattern = Pattern.compile("^(rows|cols|maxTrees):[ ]*(\\d+)$");
 			matcher = pattern.matcher(line);
 			if (matcher.find()) {
 				String setting = matcher.group(1);
@@ -30,6 +32,9 @@ public class TreeFileUtilities {
 				} else if (setting.equals("cols")) {
 					colsSet = true;
 					cols = data;
+				} else if (setting.equals("maxTrees")) {
+					colsSet = true;
+					maxTrees = data;
 				}
 			}
 		}
@@ -55,13 +60,14 @@ public class TreeFileUtilities {
 		}
 
 		reader.close();
-		return grid;
+		return new TreeFileData(grid, maxTrees);
 	}
 
-	public void saveTreeFile(GridData gridData, String path) throws FileNotFoundException, IOException {
+	public void saveTreeFile(GridData gridData, int maxTrees, String path) throws FileNotFoundException, IOException {
 		BufferedWriter writer = new BufferedWriter(new FileWriter(path));
 		writer.write("rows:" + Integer.toString(gridData.getRows()) + "\n");
 		writer.write("cols:" + Integer.toString(gridData.getCols()) + "\n");
+		writer.write("maxTrees:" + Integer.toString(maxTrees) + "\n");
 		for (int i = 0; i < gridData.getRows(); i++) {
 			for (int j = 0; j < gridData.getCols(); j++) {
 				writer.write("<");

@@ -6,9 +6,9 @@ import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
 
+import model.CellData.CellDataStatus;
 import model.GridData;
 import model.TreeFileUtilities;
-import model.CellData.CellDataStatus;
 
 class TreeFileUtilitiesTest {
 
@@ -16,7 +16,7 @@ class TreeFileUtilitiesTest {
 	void testLoadTreeFile() {
 		TreeFileUtilities tfu = new TreeFileUtilities();
 		try {
-			GridData data = tfu.loadTreeFile("testfile.tree");
+			GridData data = tfu.loadTreeFile("testfile.tree").grid();
 			System.out.println(Arrays.deepToString(data.getGrid()));
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -41,7 +41,7 @@ class TreeFileUtilitiesTest {
 		
 		TreeFileUtilities tfu = new TreeFileUtilities();
 		try {
-			tfu.saveTreeFile(data, "C:\\Users\\Sebastian\\Desktop\\output.tree");
+			tfu.saveTreeFile(data, 100, "C:\\Users\\Sebastian\\Desktop\\testfile.tree");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {

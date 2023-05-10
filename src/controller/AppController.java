@@ -7,6 +7,7 @@ import java.awt.event.WindowEvent;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 import javax.swing.Box;
 import javax.swing.JFrame;
@@ -19,6 +20,7 @@ import model.CellData;
 import model.CellData.CellDataStatus;
 import model.GridData;
 import model.TreeFileUtilities;
+import model.TreeFileUtilities.TreeFileData;
 import view.AppView;
 import view.components.AppMenu;
 import view.components.GlobalSettings.MapViewMode;
@@ -27,7 +29,7 @@ import view.components.TreeAreasGridCell;
 public class AppController {
 	private GridData modelData;
 	private AppView view;
-	
+
 	public AppController(AppView view, GridData modelData) {
 		this.view = view;
 		this.modelData = modelData;
@@ -45,7 +47,6 @@ public class AppController {
 					.setMaxTrees(view.getControlPanel().getGlobalSettingsTab().getMaxTreesInput().getValue());
 			view.getControlPanel().getGlobalSettingsTab().getViewModeInput().setValue(MapViewMode.TOP_DOWN);
 			this.reflectData();
-			System.out.println("Max trees: " + view.getTreeAreasGrid().getMaxTrees());
 		});
 
 		// On cell tree count changed
@@ -101,7 +102,7 @@ public class AppController {
 			app.App.view.getControlPanel().disableAreaSettingsTab();
 			int viewMode = view.getControlPanel().getGlobalSettingsTab().getViewModeInput().getValue();
 			if (viewMode == MapViewMode.GRAPH) {
-				ArrayList<CellData> dataArr = new ArrayList<>();
+				LinkedList<CellData> dataArr = new LinkedList<>();
 				for (int row = 0; row < this.modelData.getRows(); row++) {
 					for (int col = 0; col < this.modelData.getCols(); col++) {
 						CellData currentWorkingData = this.modelData.getGrid()[row][col];
@@ -213,7 +214,8 @@ public class AppController {
 		}
 		TreeFileUtilities tfu = new TreeFileUtilities();
 		try {
-			tfu.saveTreeFile(app.App.controller.getModelData(), filePath);
+			tfu.saveTreeFile(app.App.controller.getModelData(), app.App.view.getTreeAreasGrid().getMaxTrees(),
+					filePath);
 		} catch (NumberFormatException e) {
 			e.printStackTrace();
 		} catch (FileNotFoundException e) {
@@ -237,12 +239,21 @@ public class AppController {
 		}
 		TreeFileUtilities tfu = new TreeFileUtilities();
 		try {
-			GridData data = tfu.loadTreeFile(filePath);
+			TreeFileData fileData = tfu.loadTreeFile(filePath);
+			GridData data = fileData.grid();
+
 			app.App.view.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 			app.App.view.dispatchEvent(new WindowEvent(app.App.view, WindowEvent.WINDOW_CLOSING));
 			app.App.view = new AppView(data.getRows(), data.getCols());
+			app.App.view.getTreeAreasGrid().setMaxTrees(fileData.maxTrees());
+			try {
+				app.App.view.getControlPanel().getGlobalSettingsTab().getMaxTreesInput().setValue(fileData.maxTrees());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			app.App.controller = new AppController(app.App.view, data);
 			app.App.view.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			app.App.view.setTitle(fileName + " - Tree Logging Tracker");
 			app.App.view.setVisible(true);
 		} catch (NumberFormatException e) {
 			e.printStackTrace();

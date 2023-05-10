@@ -1,19 +1,19 @@
 package controller;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 
 import model.CellData;
 
 public class MergeSortCellData {
 
-	public static void sort(ArrayList<CellData> list) {
+	public static void sort(LinkedList<CellData> list) {
 		if (list == null || list.size() == 0) {
 			return;
 		}
 		mergeSort(list, 0, list.size() - 1);
 	}
 
-	private static void mergeSort(ArrayList<CellData> list, int left, int right) {
+	private static void mergeSort(LinkedList<CellData> list, int left, int right) {
 		if (left < right) {
 			int mid = left + (right - left) / 2;
 
@@ -24,12 +24,12 @@ public class MergeSortCellData {
 		}
 	}
 
-	private static void merge(ArrayList<CellData> list, int left, int mid, int right) {
+	private static void merge(LinkedList<CellData> list, int left, int mid, int right) {
 		int n1 = mid - left + 1;
 		int n2 = right - mid;
 
-		ArrayList<CellData> leftList = new ArrayList<CellData>(n1);
-		ArrayList<CellData> rightList = new ArrayList<CellData>(n2);
+		LinkedList<CellData> leftList = new LinkedList<>();
+		LinkedList<CellData> rightList = new LinkedList<>();
 
 		for (int i = 0; i < n1; i++) {
 			leftList.add(list.get(left + i));

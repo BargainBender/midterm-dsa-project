@@ -1,31 +1,16 @@
 package view.components;
 
-import java.awt.Dimension;
-import java.awt.FileDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.awt.event.KeyEvent;
 
-import javax.swing.Box;
 import javax.swing.ButtonGroup;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JRadioButton;
-import javax.swing.JSpinner;
-import javax.swing.JTextField;
 
-import controller.AppController;
 import model.CellData.CellDataStatus;
-import model.GridData;
-import model.TreeFileUtilities;
-import view.AppView;
 import view.components.GlobalSettings.MapViewMode;
 
 public class AppMenu extends JMenuBar {

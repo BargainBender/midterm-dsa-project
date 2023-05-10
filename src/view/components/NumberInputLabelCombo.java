@@ -36,19 +36,18 @@ public class NumberInputLabelCombo extends JPanel {
 	public int getValue() {
 		return (Integer) this.input.getValue();
 	}
-	
+
 	public void resetValue() {
 		this.input.setValue(0);
 	}
-	
-	public void setValue(int value) throws Exception {
+
+	public void setValue(int value) {
 		if (value < 0) {
 			this.input.setValue(0);
-			throw new Exception("Cannot set value less than 0!");
 		}
 		this.input.setValue(value);
 	}
-	
+
 	public void addChangeListener(ChangeListener changeListener) {
 		this.input.addChangeListener(changeListener);
 	}
