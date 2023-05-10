@@ -21,6 +21,11 @@ public class GridData {
 		}
 	}
 	
+	public void setGrid(CellData[][] grid) {
+		this.grid = grid;
+		this.graphGrid = grid;
+	}
+	
 	public CellData[][] getGraphGrid() {
 		return graphGrid;
 	}

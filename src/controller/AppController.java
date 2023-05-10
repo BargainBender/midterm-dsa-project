@@ -148,4 +148,8 @@ public class AppController {
 	public GridData getModelData() {
 		return modelData;
 	}
+	
+	public void setModelData(GridData grid) {
+		this.modelData = grid;
+	}
 }

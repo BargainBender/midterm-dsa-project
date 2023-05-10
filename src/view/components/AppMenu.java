@@ -1,5 +1,6 @@
 package view.components;
 
+import java.awt.FileDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -7,6 +8,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JRadioButton;
 
 import model.CellData.CellDataStatus;
@@ -14,7 +16,7 @@ import view.components.GlobalSettings.MapViewMode;
 
 public class AppMenu extends JMenuBar {
 	private static int statusTool = -1;
-	public AppMenu() {
+	public AppMenu() {	
 		FileMenu file = new FileMenu();
 		this.add(file);
 		
@@ -25,6 +27,24 @@ public class AppMenu extends JMenuBar {
 	private class FileMenu extends JMenu {
 		FileMenu() {
 			this.setText("File");
+			JMenuItem openTreesFile = new JMenuItem("Open trees file");
+			openTreesFile.addActionListener(actionEvent -> {
+				FileDialog fd = new FileDialog(app.App.view, "Choose a file", FileDialog.LOAD);
+				fd.setDirectory("C:\\");
+				fd.setFile("*.tree");
+				fd.setVisible(true);
+				String fileName = fd.getFile();
+				String directory = fd.getDirectory();
+				
+				String filePath = directory + fileName;
+				if (fileName == null && directory == null) {
+					JOptionPane.showMessageDialog(app.App.view, "Cancelled opening file");
+				} else {
+					JOptionPane.showMessageDialog(app.App.view, "you chose " + filePath);
+				}
+			});
+			
+			this.add(openTreesFile);
 			JMenuItem exit = new JMenuItem("Exit");
 			exit.addActionListener(actionEvent -> {
 				System.exit(0);
