@@ -8,6 +8,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.Stack;
 
 import javax.swing.Box;
 import javax.swing.JFrame;
@@ -29,6 +30,7 @@ import view.components.TreeAreasGridCell;
 public class AppController {
 	private GridData modelData;
 	private AppView view;
+	private Stack<Action> undoStack = new Stack<>();
 
 	public AppController(AppView view, GridData modelData) {
 		this.view = view;
@@ -78,6 +80,14 @@ public class AppController {
 			}
 			CellData currentWorkingData = this.modelData.getGrid()[lastSelectedCell.getRow()][lastSelectedCell
 					.getCol()];
+
+			if (currentWorkingData.getStatus() != status) {
+				CellData copy = new CellData();
+				copy.setStatus(currentWorkingData.getStatus());
+				copy.setTreeCount(currentWorkingData.getTreeCount());
+				undoStack.push(new ChangesCellStatusAction(copy, lastSelectedCell.getRow(), lastSelectedCell.getCol()));
+			}
+
 			currentWorkingData.setStatus(status);
 			if (status == CellDataStatus.UNSET) {
 				currentWorkingData.setTreeCount(-2);
@@ -275,5 +285,9 @@ public class AppController {
 
 	public AppView getView() {
 		return view;
+	}
+
+	public Stack<Action> getUndoStack() {
+		return undoStack;
 	}
 }

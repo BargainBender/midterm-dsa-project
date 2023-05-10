@@ -9,6 +9,9 @@ import java.awt.event.MouseEvent;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
+import app.App;
+import controller.ChangesCellStatusAction;
+import model.CellData;
 import model.CellData.CellDataStatus;
 import view.components.GlobalSettings.MapViewMode;
 
@@ -71,7 +74,6 @@ public class TreeAreasGrid extends JPanel {
 
 		@Override
 		public void mousePressed(MouseEvent mouseEvent) {
-			
 			final TreeAreasGridCell clickedPanel = (TreeAreasGridCell) mouseEvent.getComponent();
 			
 			int viewMode = app.App.view.getControlPanel().getGlobalSettingsTab().getViewModeInput().getValue();
@@ -85,8 +87,14 @@ public class TreeAreasGrid extends JPanel {
 			
 			// When a tool is selected, update cell on click
 			if (AppMenu.getStatusTool() != -1 && clickedPanel != null) {
-				app.App.controller.getModelData().getGrid()[clickedPanel.getRow()][clickedPanel.getCol()].setStatus(AppMenu.getStatusTool());
-				
+				CellData currentWorkingData = App.controller.getModelData().getGrid()[clickedPanel.getRow()][clickedPanel.getCol()];
+				if (currentWorkingData.getStatus() != AppMenu.getStatusTool()) {
+					CellData copy = new CellData();
+					copy.setStatus(currentWorkingData.getStatus());
+					copy.setTreeCount(currentWorkingData.getTreeCount());
+					App.controller.getUndoStack().push(new ChangesCellStatusAction(copy, clickedPanel.getRow(), clickedPanel.getCol()));
+				}
+				currentWorkingData.setStatus(AppMenu.getStatusTool());
 				if (AppMenu.getStatusTool() == CellDataStatus.UNSET) {
 					clickedPanel.unsetValues();
 					app.App.controller.getModelData().getGrid()[clickedPanel.getRow()][clickedPanel.getCol()].setTreeCount(0);
@@ -97,6 +105,7 @@ public class TreeAreasGrid extends JPanel {
 					clickedPanel.setNonProperty();
 					app.App.controller.getModelData().getGrid()[clickedPanel.getRow()][clickedPanel.getCol()].setTreeCount(0);
 				}
+				
 				return;
 			}
 			
