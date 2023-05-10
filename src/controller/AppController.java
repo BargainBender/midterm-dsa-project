@@ -14,20 +14,10 @@ import view.components.TreeAreasGridCell;
 public class AppController {
 	private GridData modelData;
 	private AppView view;
-	
+
 	public AppController(AppView view, GridData modelData) {
 		this.view = view;
 		this.modelData = modelData;
-		
-		// Random data
-		for (int row = 0; row < modelData.getRows(); row++) {
-			for (int col = 0; col < modelData.getCols(); col++) {
-				int min = 0;
-				int max = 100;
-				modelData.getGrid()[row][col].setTreeCount((int) Math.floor((Math.random() * ((max - min) + 1)) + min));
-				modelData.getGrid()[row][col].setStatus(CellDataStatus.SET);
-			}
-		}
 		
 		this.reflectData();
 		
@@ -151,5 +141,10 @@ public class AppController {
 	
 	public void setModelData(GridData grid) {
 		this.modelData = grid;
+		this.reflectData();
+	}
+	
+	public AppView getView() {
+		return view;
 	}
 }

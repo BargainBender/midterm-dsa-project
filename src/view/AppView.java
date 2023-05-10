@@ -17,6 +17,7 @@ public class AppView extends JFrame {
 		this.setLayout(new BorderLayout());
 		this.tag = new TreeAreasGrid(rows, cols);
 		this.setSize(tag.getCellSize() * tag.getCols(), tag.getCellSize() * tag.getRows() + 100);
+		this.setLocationRelativeTo(null);
 
 		this.cp = new ControlPanel();
 
@@ -31,7 +32,6 @@ public class AppView extends JFrame {
 		this.add(split, BorderLayout.CENTER);
 		this.setSize(tag.getCellSize() * tag.getCols() * 2, tag.getCellSize() * tag.getRows());
 		this.pack();
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 	
 	public ControlPanel getControlPanel() {

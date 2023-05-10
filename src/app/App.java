@@ -1,4 +1,6 @@
 package app;
+import javax.swing.JFrame;
+
 import controller.AppController;
 import model.GridData;
 import view.AppView;
@@ -10,6 +12,7 @@ public class App {
 		GridData data = new GridData(20, 20);
 		view = new AppView(data.getRows(), data.getCols());
 		controller = new AppController(view, data);
+		view.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		view.setVisible(true);
 	}
 }
