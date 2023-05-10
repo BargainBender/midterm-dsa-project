@@ -1,7 +1,10 @@
 package view;
 
 import java.awt.BorderLayout;
+import java.io.File;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JSplitPane;
 
@@ -13,12 +16,16 @@ public class AppView extends JFrame {
 	private ControlPanel cp;
 	private TreeAreasGrid tag;
 	public AppView(int rows, int cols) {
-		this.setTitle("Color Grid");
+		this.setTitle("Tree Logging Tracker");
 		this.setLayout(new BorderLayout());
 		this.tag = new TreeAreasGrid(rows, cols);
 		this.setSize(tag.getCellSize() * tag.getCols(), tag.getCellSize() * tag.getRows() + 100);
 		this.setLocationRelativeTo(null);
-
+		try {
+			this.setIconImage(ImageIO.read(new File("res/favicon.png")));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		this.cp = new ControlPanel();
 
 		// Create a split pane to hold the scroll pane and the control panel

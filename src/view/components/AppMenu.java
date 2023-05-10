@@ -1,5 +1,6 @@
 package view.components;
 
+import java.awt.Dimension;
 import java.awt.FileDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -7,18 +8,23 @@ import java.awt.event.WindowEvent;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import javax.swing.Box;
 import javax.swing.ButtonGroup;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JSpinner;
+import javax.swing.JTextField;
 
 import controller.AppController;
-import model.TreeFileUtilities;
 import model.CellData.CellDataStatus;
 import model.GridData;
+import model.TreeFileUtilities;
 import view.AppView;
 import view.components.GlobalSettings.MapViewMode;
 
@@ -36,69 +42,22 @@ public class AppMenu extends JMenuBar {
 	private class FileMenu extends JMenu {
 		FileMenu() {
 			this.setText("File");
-			
-			JMenuItem saveTreesFile = new JMenuItem("Save trees file");
-			saveTreesFile.addActionListener(actionEvent -> {
-				FileDialog fd = new FileDialog(app.App.view, "Save TREE file", FileDialog.SAVE);
-				fd.setDirectory("C:\\");
-				fd.setFile("*.tree");
-				fd.setVisible(true);
-				String fileName = fd.getFile();
-				String directory = fd.getDirectory();
 
-				String filePath = directory + fileName;
-				if (fileName == null && directory == null) {
-					return;
-				}
-				TreeFileUtilities tfu = new TreeFileUtilities();
-				try {
-					tfu.saveTreeFile(app.App.controller.getModelData(), filePath);
-				} catch (NumberFormatException e) {
-					e.printStackTrace();
-				} catch (FileNotFoundException e) {
-					e.printStackTrace();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-//				JOptionPane.showMessageDialog(app.App.view, "you saved " + filePath);
-			});
-			
+			JMenuItem newFile = new JMenuItem("New tree file");
+			newFile.addActionListener(actionEvent -> app.App.controller.createNewTreeFile());
+
+			this.add(newFile);
+
+			JMenuItem saveTreesFile = new JMenuItem("Save tree file");
+			saveTreesFile.addActionListener(actionEvent -> app.App.controller.saveTreeFile());
+
 			this.add(saveTreesFile);
-			
-			JMenuItem openTreesFile = new JMenuItem("Open tree file");
-			openTreesFile.addActionListener(actionEvent -> {
-				FileDialog fd = new FileDialog(app.App.view, "Open TREE file", FileDialog.LOAD);
-				fd.setDirectory("C:\\");
-				fd.setFile("*.tree");
-				fd.setVisible(true);
-				String fileName = fd.getFile();
-				String directory = fd.getDirectory();
 
-				String filePath = directory + fileName;
-				if (fileName == null && directory == null) {
-					return;
-				}
-				TreeFileUtilities tfu = new TreeFileUtilities();
-				try {
-					GridData data = tfu.loadTreeFile(filePath);
-					app.App.view.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-					app.App.view.dispatchEvent(new WindowEvent(app.App.view, WindowEvent.WINDOW_CLOSING));
-					app.App.view = new AppView(data.getRows(), data.getCols());
-					app.App.controller = new AppController(app.App.view, data);
-					app.App.view.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-					app.App.view.setVisible(true);
-				} catch (NumberFormatException e) {
-					e.printStackTrace();
-				} catch (FileNotFoundException e) {
-					e.printStackTrace();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-//				JOptionPane.showMessageDialog(app.App.view, "you chose " + filePath);
-			});
+			JMenuItem openTreesFile = new JMenuItem("Open tree file");
+			openTreesFile.addActionListener(actionEvent -> app.App.controller.loadTreeFile());
 
 			this.add(openTreesFile);
-			
+
 			JMenuItem exit = new JMenuItem("Exit");
 			exit.addActionListener(actionEvent -> {
 				System.exit(0);
