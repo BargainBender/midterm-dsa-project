@@ -10,6 +10,8 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JRadioButton;
 
+import app.App;
+import controller.Action;
 import model.CellData.CellDataStatus;
 import view.components.GlobalSettings.MapViewMode;
 
@@ -20,7 +22,7 @@ public class AppMenu extends JMenuBar {
 		FileMenu file = new FileMenu();
 		this.add(file);
 
-		ToolMenu tools = new ToolMenu();
+		EditMenu tools = new EditMenu();
 		this.add(tools);
 	}
 
@@ -51,36 +53,46 @@ public class AppMenu extends JMenuBar {
 		}
 	}
 
-	private class ToolMenu extends JMenu {
+	private class EditMenu extends JMenu {
 		private static ButtonGroup statusGroup;
 
-		ToolMenu() {
-			this.setText("Tools");
+		EditMenu() {
+			this.setText("Edit");
 
 			JMenu setStatus = new JMenu("Set status");
 
-			ToolMenu.statusGroup = new ButtonGroup();
+			EditMenu.statusGroup = new ButtonGroup();
 			JRadioButton unset = new JRadioButton("Unset");
 			unset.setActionCommand("UNSET");
-			unset.addActionListener(new StatusGroupActionListener(ToolMenu.statusGroup));
+			unset.addActionListener(new StatusGroupActionListener(EditMenu.statusGroup));
 
 			JRadioButton set = new JRadioButton("Set");
 			set.setActionCommand("SET");
-			set.addActionListener(new StatusGroupActionListener(ToolMenu.statusGroup));
+			set.addActionListener(new StatusGroupActionListener(EditMenu.statusGroup));
 
 			JRadioButton nonProperty = new JRadioButton("Non-property");
 			nonProperty.setActionCommand("NON_PROPERTY");
-			nonProperty.addActionListener(new StatusGroupActionListener(ToolMenu.statusGroup));
+			nonProperty.addActionListener(new StatusGroupActionListener(EditMenu.statusGroup));
 
-			ToolMenu.statusGroup.add(unset);
-			ToolMenu.statusGroup.add(set);
-			ToolMenu.statusGroup.add(nonProperty);
+			EditMenu.statusGroup.add(unset);
+			EditMenu.statusGroup.add(set);
+			EditMenu.statusGroup.add(nonProperty);
 
 			setStatus.add(unset);
 			setStatus.add(set);
 			setStatus.add(nonProperty);
-
+			
 			this.add(setStatus);
+			
+			JMenuItem undo = new JMenuItem("Undo");
+			undo.addActionListener(actionEvent -> {
+				if (!App.controller.getUndoStack().isEmpty()) {
+					Action lastAction = App.controller.getUndoStack().pop();
+					lastAction.undo();
+				}
+			});
+			
+			this.add(undo);
 		}
 	}
 
@@ -102,7 +114,7 @@ public class AppMenu extends JMenuBar {
 
 	public static void useNoStatusTool() {
 		AppMenu.statusTool = -1;
-		ToolMenu.statusGroup.clearSelection();
+		EditMenu.statusGroup.clearSelection();
 	}
 
 	private class StatusGroupActionListener implements ActionListener {
@@ -118,7 +130,7 @@ public class AppMenu extends JMenuBar {
 
 			if (viewMode == MapViewMode.GRAPH) {
 				AppMenu.statusTool = -1;
-				ToolMenu.statusGroup.clearSelection();
+				EditMenu.statusGroup.clearSelection();
 				return;
 			}
 			String statusToolSelected = statusGroup.getSelection().getActionCommand();

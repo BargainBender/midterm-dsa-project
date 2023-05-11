@@ -29,7 +29,6 @@ public class AreaSettings extends JScrollPane {
 		};
 		
 		statusInput = new DropdownInputLabelCombo("Status", options);
-		
 
 		contents.add(treeCountInput);
 		contents.add(statusInput);
