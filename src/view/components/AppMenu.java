@@ -57,7 +57,7 @@ public class AppMenu extends JMenuBar {
 		private static ButtonGroup statusGroup;
 
 		EditMenu() {
-			this.setText("Tools");
+			this.setText("Edit");
 
 			JMenu setStatus = new JMenu("Set status");
 
