@@ -19,11 +19,14 @@ public class AppMenu extends JMenuBar {
 	private static int statusTool = -1;
 
 	public AppMenu() {
-		FileMenu file = new FileMenu();
+		JMenu file = new FileMenu();
 		this.add(file);
 
-		EditMenu tools = new EditMenu();
+		JMenu tools = new EditMenu();
 		this.add(tools);
+		
+		JMenu order = new OrderMenu();
+		this.add(order);
 	}
 
 	private class FileMenu extends JMenu {
@@ -93,6 +96,20 @@ public class AppMenu extends JMenuBar {
 			});
 			
 			this.add(undo);
+		}
+	}
+	
+	private class OrderMenu extends JMenu {
+		public OrderMenu() {
+			this.setText("Order");
+			
+			JMenuItem newOrder = new JMenuItem("New order");
+			newOrder.addActionListener(actionEvent -> {
+				OrderWindow newOrderWindow = new OrderWindow();
+				newOrderWindow.setVisible(true);
+			});
+			
+			this.add(newOrder);
 		}
 	}
 

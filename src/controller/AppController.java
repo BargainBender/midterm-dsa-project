@@ -170,6 +170,7 @@ public class AppController {
 	}
 
 	public void createNewTreeFile() {
+		// TODO: Move to view
 		JSpinner rowsField = new JSpinner();
 		JSpinner columnsField = new JSpinner();
 
