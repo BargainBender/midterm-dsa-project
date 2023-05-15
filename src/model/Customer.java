@@ -6,6 +6,7 @@ public class Customer {
 	private String contactNumber;
 	private String emailAddress;
 	private String fullAddress;
+	private String notes;
 
 	public Customer(String customerName, String customerCompany, String contactNumber, String emailAddress,
 			String fullAddress, String notes) {
@@ -53,5 +54,4 @@ public class Customer {
 	public void setNotes(String notes) {
 		this.notes = notes;
 	}
-	private String notes;
 }

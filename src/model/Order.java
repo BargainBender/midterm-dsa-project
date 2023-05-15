@@ -2,7 +2,7 @@ package model;
 
 public class Order {
 	private Customer customer;
-	private int quantity;
+	private float quantity;
 	private float quotation;
 	private boolean fulfilled;
 
@@ -14,12 +14,12 @@ public class Order {
 		this.customer = customer;
 	}
 
-	public int getQuantity() {
+	public float getQuantity() {
 		return quantity;
 	}
 
-	public void setQuantity(int quantity) {
-		this.quantity = quantity;
+	public float setQuantity(float string) {
+		return this.quantity = string;
 	}
 
 	public float getQuotation() {
@@ -38,10 +38,10 @@ public class Order {
 		this.fulfilled = fulfilled;
 	}
 
-	public Order(Customer customer, int quantity, float quotation, boolean fulfilled) {
+	public Order(Customer customer, float qtyValue, float quotation, boolean fulfilled) {
 		super();
 		this.customer = customer;
-		this.quantity = quantity;
+		this.quantity = qtyValue;
 		this.quotation = quotation;
 		this.fulfilled = fulfilled;
 	}
