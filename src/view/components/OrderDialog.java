@@ -24,8 +24,7 @@ import model.Order;
 public class OrderDialog extends JDialog {
 
 	public OrderDialog(Order order) {
-        super((JFrame) null, "New order", true); // Set modal dialog
-		this.setTitle("New order");
+        super(App.view, "Viewing order " + order.getOrderId(), true); // Set modal dialog
 		this.setLayout(new BorderLayout());
 		this.setLocationRelativeTo(null);
 
@@ -138,8 +137,7 @@ public class OrderDialog extends JDialog {
 	}
 
 	public OrderDialog() {
-        super((JFrame) null, "New order", true); // Set modal dialog
-		this.setTitle("New order");
+        super(App.view, "New order", true); // Set modal dialog
 		this.setLayout(new BorderLayout());
 		this.setLocationRelativeTo(null);
 
