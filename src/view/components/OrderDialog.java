@@ -2,7 +2,6 @@ package view.components;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.io.File;
 import java.io.IOException;
 
@@ -21,7 +20,6 @@ import javax.swing.JTextField;
 import app.App;
 import model.Customer;
 import model.Order;
-import model.orderReceipt;
 
 public class OrderDialog extends JDialog {
 
