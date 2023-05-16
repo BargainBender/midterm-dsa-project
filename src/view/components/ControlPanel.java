@@ -1,14 +1,13 @@
 package view.components;
 
-import java.awt.BorderLayout;
 import java.awt.Dimension;
 
 import javax.swing.BorderFactory;
-import javax.swing.JPanel;
+import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.border.Border;
 
-public class ControlPanel extends JPanel {
+public class ControlPanel extends JSplitPane {
 
 	/**
 	 * Use for vertical spacing between elements inside panels
@@ -20,47 +19,57 @@ public class ControlPanel extends JPanel {
 	 */
 	public static final Border PANEL_HORIZONTAL_PADDING = BorderFactory.createEmptyBorder(0, 5, 0, 5);
 
-	private JTabbedPane tp;
-	private GlobalSettings gs;
-	private AreaSettings as;
-	
+	private JTabbedPane tabbedPane;
+	private GlobalSettings globalSettings;
+	private AreaSettings areaSettings;
+	private OrdersListView ordersListView;
+
 	public ControlPanel() {
-		this.setLayout(new BorderLayout());
-		this.tp = new JTabbedPane();
+		this.setOrientation(JSplitPane.VERTICAL_SPLIT);
+		this.setResizeWeight(0.5);
+		this.setPreferredSize(new Dimension(200, this.getSize().height));
+		this.tabbedPane = new JTabbedPane();
+		
 
-		this.gs = new GlobalSettings();
-		this.tp.add("Global", gs);
+		this.globalSettings = new GlobalSettings();
+		this.tabbedPane.add("Global", globalSettings);
 
-		this.as = new AreaSettings();
-		this.tp.add("Selected Area", as);
+		this.areaSettings = new AreaSettings();
+		this.tabbedPane.add("Selected Area", areaSettings);
+		
+		this.ordersListView = new OrdersListView();
 		
 		this.disableAreaSettingsTab();
-
-		this.setPreferredSize(new Dimension(200, this.getSize().height));
-		this.add(BorderLayout.CENTER, tp);
+		
+		this.setTopComponent(tabbedPane);
+		this.setBottomComponent(ordersListView);
 	}
 	
 	public GlobalSettings getGlobalSettingsTab() {
-		return gs;
+		return globalSettings;
 	}
 
 	public AreaSettings getAreaSettingsTab() {
-		return as;
+		return areaSettings;
+	}
+
+	public OrdersListView getOrdersListView() {
+		return ordersListView;
 	}
 
 	public void openGlobalSettingsTab() {
-		this.tp.setSelectedIndex(0);
+		this.tabbedPane.setSelectedIndex(0);
 	}
 	
 	public void openAreaSettingsTab() {
-		this.tp.setSelectedIndex(1);
+		this.tabbedPane.setSelectedIndex(1);
 	}
 	
 	public void disableAreaSettingsTab() {
-		this.tp.setEnabledAt(1, false);
+		this.tabbedPane.setEnabledAt(1, false);
 	}
 	
 	public void enableAreaSettingsTab() {
-		this.tp.setEnabledAt(1, true);
+		this.tabbedPane.setEnabledAt(1, true);
 	}
 }

@@ -7,6 +7,7 @@ import java.awt.event.WindowEvent;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Stack;
 
 import javax.swing.Box;
@@ -19,6 +20,7 @@ import javax.swing.JSpinner;
 import model.CellData;
 import model.CellData.CellDataStatus;
 import model.GridData;
+import model.Order;
 import model.TreeFileUtilities;
 import model.TreeFileUtilities.TreeFileData;
 import view.AppView;
@@ -29,12 +31,25 @@ import view.components.TreeAreasGridCell;
 public class AppController {
 	private GridData modelData;
 	private AppView view;
+	private Queue<Order> orders = new LinkedList<>();
 	private Stack<Action> undoStack = new Stack<>();
 
+	public AppController(AppView view, GridData modelData, Queue<Order> orders) {
+		init(view, modelData);
+		this.orders = orders;
+		Queue<Order> copy = new LinkedList<>(orders);
+		for (Order order : copy) {
+			loadOrder(order);
+		}
+	}
+
 	public AppController(AppView view, GridData modelData) {
+		init(view, modelData);
+	}
+
+	private void init(AppView view, GridData modelData) {
 		this.view = view;
 		this.modelData = modelData;
-
 		this.reflectData();
 
 		// On max trees changed
@@ -225,7 +240,7 @@ public class AppController {
 		TreeFileUtilities tfu = new TreeFileUtilities();
 		try {
 			tfu.saveTreeFile(app.App.controller.getModelData(), app.App.view.getTreeAreasGrid().getMaxTrees(),
-					filePath);
+					this.orders, filePath);
 		} catch (NumberFormatException e) {
 			e.printStackTrace();
 		} catch (FileNotFoundException e) {
@@ -256,12 +271,13 @@ public class AppController {
 			app.App.view.dispatchEvent(new WindowEvent(app.App.view, WindowEvent.WINDOW_CLOSING));
 			app.App.view = new AppView(data.getRows(), data.getCols());
 			app.App.view.getTreeAreasGrid().setMaxTrees(fileData.maxTrees());
+			this.orders = fileData.orders();
 			try {
 				app.App.view.getControlPanel().getGlobalSettingsTab().getMaxTreesInput().setValue(fileData.maxTrees());
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			app.App.controller = new AppController(app.App.view, data);
+			app.App.controller = new AppController(app.App.view, data, this.orders);
 			app.App.view.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			app.App.view.setTitle(fileName + " - Tree Logging Tracker");
 			app.App.view.setVisible(true);
@@ -290,4 +306,22 @@ public class AppController {
 	public Stack<Action> getUndoStack() {
 		return undoStack;
 	}
+
+	public void loadOrder(Order order) {
+		this.view.getControlPanel().getOrdersListView().updateListModel(this.orders);
+	}
+
+	public void enqueueOrder(Order order) {
+		this.orders.offer(order);
+		this.view.getControlPanel().getOrdersListView().updateListModel(this.orders);
+	}
+	
+	public void fulfillNextOrder() {
+		if (this.orders.isEmpty()) {
+			return;
+		}
+		this.orders.remove();
+		this.view.getControlPanel().getOrdersListView().updateListModel(this.orders);
+	}
+
 }
