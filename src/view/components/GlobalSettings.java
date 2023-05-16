@@ -1,13 +1,7 @@
 package view.components;
 
-import java.awt.Dimension;
-import java.util.LinkedList;
-import java.util.Queue;
-
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
